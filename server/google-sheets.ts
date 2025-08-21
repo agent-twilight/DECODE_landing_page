@@ -126,7 +126,10 @@ export class GoogleSheetsStorage {
     }
     
     try {
-      // Create headers for Waitlist sheet
+      // First, try to create the sheets if they don't exist
+      await this.createSheetsIfNeeded();
+      
+      // Then set up headers for Waitlist sheet
       await this.sheets.spreadsheets.values.update({
         spreadsheetId: this.spreadsheetId,
         range: 'Waitlist!A1:E1',
@@ -136,7 +139,7 @@ export class GoogleSheetsStorage {
         },
       });
 
-      // Create headers for Beta Applications sheet
+      // Set up headers for Beta Applications sheet
       await this.sheets.spreadsheets.values.update({
         spreadsheetId: this.spreadsheetId,
         range: 'Beta Applications!A1:F1',
@@ -145,9 +148,60 @@ export class GoogleSheetsStorage {
           values: [['ID', 'Email', 'Background', 'Experience/Interest', 'Created At (ISO)', 'Created At (Readable)']],
         },
       });
+      
+      console.log('Google Sheets headers initialized successfully');
     } catch (error) {
-      console.error('Error initializing Google Sheets headers:', error);
-      // Don't throw here - headers might already exist
+      console.error('Error initializing Google Sheets:', error);
+      // Don't throw here - continue gracefully
+    }
+  }
+
+  private async createSheetsIfNeeded(): Promise<void> {
+    try {
+      // Get current spreadsheet info
+      const spreadsheet = await this.sheets.spreadsheets.get({
+        spreadsheetId: this.spreadsheetId,
+      });
+
+      const existingSheets = spreadsheet.data.sheets?.map((sheet: any) => sheet.properties?.title) || [];
+      
+      const requests = [];
+      
+      // Check if Waitlist sheet exists
+      if (!existingSheets.includes('Waitlist')) {
+        requests.push({
+          addSheet: {
+            properties: {
+              title: 'Waitlist',
+            },
+          },
+        });
+      }
+      
+      // Check if Beta Applications sheet exists
+      if (!existingSheets.includes('Beta Applications')) {
+        requests.push({
+          addSheet: {
+            properties: {
+              title: 'Beta Applications',
+            },
+          },
+        });
+      }
+      
+      // Create sheets if needed
+      if (requests.length > 0) {
+        await this.sheets.spreadsheets.batchUpdate({
+          spreadsheetId: this.spreadsheetId,
+          resource: {
+            requests: requests,
+          },
+        });
+        console.log('Created missing sheets:', requests.map(r => r.addSheet.properties.title));
+      }
+    } catch (error) {
+      console.error('Error creating sheets:', error);
+      // Continue - sheets might already exist
     }
   }
 
