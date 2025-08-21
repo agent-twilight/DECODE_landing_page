@@ -1,5 +1,6 @@
 import { type User, type InsertUser, type WaitlistSignup, type InsertWaitlistSignup, type BetaApplication, type InsertBetaApplication } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { googleSheetsStorage } from "./google-sheets";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -48,7 +49,16 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
     };
+    
+    // Store in both memory and Google Sheets
     this.waitlistSignups.set(id, signup);
+    
+    try {
+      await googleSheetsStorage.addWaitlistSignup(signup);
+    } catch (error) {
+      console.error('Failed to save to Google Sheets, but saved in memory:', error);
+    }
+    
     return signup;
   }
 
@@ -59,20 +69,53 @@ export class MemStorage implements IStorage {
       id,
       createdAt: new Date(),
     };
+    
+    // Store in both memory and Google Sheets
     this.betaApplications.set(id, application);
+    
+    try {
+      await googleSheetsStorage.addBetaApplication(application);
+    } catch (error) {
+      console.error('Failed to save to Google Sheets, but saved in memory:', error);
+    }
+    
     return application;
   }
 
   async getWaitlistSignupByEmail(email: string): Promise<WaitlistSignup | undefined> {
-    return Array.from(this.waitlistSignups.values()).find(
+    // Check memory first
+    const memoryResult = Array.from(this.waitlistSignups.values()).find(
       (signup) => signup.email === email,
     );
+    
+    if (memoryResult) return memoryResult;
+    
+    // Check Google Sheets if not in memory
+    try {
+      const existsInSheets = await googleSheetsStorage.checkEmailExists(email, 'Waitlist');
+      return existsInSheets ? { email } as WaitlistSignup : undefined;
+    } catch (error) {
+      console.error('Error checking Google Sheets for email:', error);
+      return undefined;
+    }
   }
 
   async getBetaApplicationByEmail(email: string): Promise<BetaApplication | undefined> {
-    return Array.from(this.betaApplications.values()).find(
+    // Check memory first
+    const memoryResult = Array.from(this.betaApplications.values()).find(
       (application) => application.email === email,
     );
+    
+    if (memoryResult) return memoryResult;
+    
+    // Check Google Sheets if not in memory
+    try {
+      const existsInSheets = await googleSheetsStorage.checkEmailExists(email, 'Beta Applications');
+      return existsInSheets ? { email } as BetaApplication : undefined;
+    } catch (error) {
+      console.error('Error checking Google Sheets for email:', error);
+      return undefined;
+    }
   }
 
   async getAllWaitlistSignups(): Promise<WaitlistSignup[]> {
