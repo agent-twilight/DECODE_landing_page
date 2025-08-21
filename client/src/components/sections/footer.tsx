@@ -18,7 +18,7 @@ export default function Footer() {
               Evidence-based skincare analysis powered by scientific research and authoritative databases. Make informed decisions about your skincare routine.
             </p>
             <div className="mt-6 flex space-x-4">
-              <a href="#" className="text-blue-200 hover:text-white transition-colors">
+              {/* <a href="#" className="text-blue-200 hover:text-white transition-colors">
                 <Twitter className="h-6 w-6" />
               </a>
               <a href="#" className="text-blue-200 hover:text-white transition-colors">
@@ -26,7 +26,7 @@ export default function Footer() {
               </a>
               <a href="#" className="text-blue-200 hover:text-white transition-colors">
                 <Linkedin className="h-6 w-6" />
-              </a>
+              </a> */}
             </div>
           </div>
           

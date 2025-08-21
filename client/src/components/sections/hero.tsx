@@ -54,7 +54,7 @@ export default function Hero() {
           </div>
           <div className="mt-12 lg:mt-0 lg:col-span-6">
             <img 
-              src="https://images.unsplash.com/photo-1570194065650-d99fb4a7b2d1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&h=800" 
+              src="https://images.pexels.com/photos/14107358/pexels-photo-14107358.jpeg" 
               alt="Professional skincare products on clean laboratory surface" 
               className="rounded-2xl shadow-2xl w-full h-auto" 
             />

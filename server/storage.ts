@@ -9,6 +9,8 @@ export interface IStorage {
   createBetaApplication(application: InsertBetaApplication): Promise<BetaApplication>;
   getWaitlistSignupByEmail(email: string): Promise<WaitlistSignup | undefined>;
   getBetaApplicationByEmail(email: string): Promise<BetaApplication | undefined>;
+  getAllWaitlistSignups(): Promise<WaitlistSignup[]>;
+  getAllBetaApplications(): Promise<BetaApplication[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -71,6 +73,14 @@ export class MemStorage implements IStorage {
     return Array.from(this.betaApplications.values()).find(
       (application) => application.email === email,
     );
+  }
+
+  async getAllWaitlistSignups(): Promise<WaitlistSignup[]> {
+    return Array.from(this.waitlistSignups.values());
+  }
+
+  async getAllBetaApplications(): Promise<BetaApplication[]> {
+    return Array.from(this.betaApplications.values());
   }
 }
 

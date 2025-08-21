@@ -63,6 +63,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to view stored data (for development only)
+  app.get("/api/admin/data", async (req, res) => {
+    try {
+      const waitlistSignups = await storage.getAllWaitlistSignups();
+      const betaApplications = await storage.getAllBetaApplications();
+      
+      res.json({
+        waitlistSignups: {
+          count: waitlistSignups.length,
+          data: waitlistSignups
+        },
+        betaApplications: {
+          count: betaApplications.length,
+          data: betaApplications
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error retrieving data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
