@@ -24,9 +24,10 @@ Preferred communication style: Simple, everyday language.
 - **Storage Interface**: Abstracted storage layer with in-memory implementation for development
 
 ## Data Storage Solutions
+- **Primary Storage**: Google Sheets integration for waitlist and beta application data
+- **Fallback Storage**: In-memory storage for current session (when Google Sheets unavailable)
 - **Database**: PostgreSQL (configured for production) with Neon Database serverless
 - **Schema Management**: Drizzle migrations with schema-first approach
-- **Development Storage**: In-memory storage implementation for rapid development
 - **Session Management**: PostgreSQL session store using connect-pg-simple
 
 ## Authentication and Authorization
@@ -37,12 +38,19 @@ Preferred communication style: Simple, everyday language.
 ## API Design
 - **Architecture**: RESTful API endpoints under `/api` prefix
 - **Endpoints**:
-  - `POST /api/waitlist` - Waitlist signup with email validation
-  - `POST /api/beta` - Beta testing application with experience requirements
+  - `POST /api/waitlist` - Waitlist signup with email validation, stores to Google Sheets
+  - `POST /api/beta` - Beta testing application with experience requirements, stores to Google Sheets
+- **Data Storage**: Google Sheets integration with graceful fallback to in-memory storage
 - **Validation**: Server-side validation using shared Zod schemas
 - **Error Handling**: Centralized error handling with proper HTTP status codes
 
 # External Dependencies
+
+## Google Sheets Integration
+- **Google APIs**: Node.js client for Google Sheets API v4
+- **Authentication**: Service account JSON key for server-to-server access
+- **Storage Format**: Structured data with headers for waitlist and beta applications
+- **Configuration**: Requires GOOGLE_SERVICE_ACCOUNT_KEY (JSON) and GOOGLE_SPREADSHEET_ID
 
 ## UI and Component Libraries
 - **Radix UI**: Comprehensive set of low-level UI primitives for accessibility and customization

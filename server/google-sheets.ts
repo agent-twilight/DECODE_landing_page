@@ -11,36 +11,52 @@ export class GoogleSheetsStorage {
     
     // Check if we have a service account key (JSON format)
     if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      const keyValue = process.env.GOOGLE_SERVICE_ACCOUNT_KEY.trim();
+      
+      // Check if it looks like an API key (starts with "AIza") vs service account JSON
+      if (keyValue.startsWith('AIza') || keyValue.startsWith('AIzaS')) {
+        console.warn('Detected API key instead of service account JSON. Google Sheets integration will be disabled.');
+        console.warn('To enable Google Sheets storage, please provide a service account JSON key file content.');
+        this.sheets = null;
+        this.spreadsheetId = '';
+        return;
+      }
+      
       try {
-        const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+        const credentials = JSON.parse(keyValue);
+        
+        // Validate it's a proper service account key
+        if (!credentials.type || credentials.type !== 'service_account') {
+          throw new Error('Invalid service account format');
+        }
+        
         auth = new google.auth.GoogleAuth({
           credentials,
           scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
+        console.log('Google Sheets authentication configured with service account');
       } catch (error) {
-        console.error('Invalid GOOGLE_SERVICE_ACCOUNT_KEY format. Expected JSON format.');
-        // Fallback to API key if JSON parsing fails
-        auth = new google.auth.GoogleAuth({
-          apiKey: process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
-          scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-        });
+        console.error('Invalid GOOGLE_SERVICE_ACCOUNT_KEY format. Expected JSON format.', error);
+        throw new Error('Invalid Google Service Account Key format. Please provide a valid JSON service account key file content.');
       }
     } else {
       console.error('GOOGLE_SERVICE_ACCOUNT_KEY not found in environment variables');
-      // Create a basic auth object to prevent crashes
-      auth = new google.auth.GoogleAuth({
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-      });
+      throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY is required for Google Sheets integration');
     }
 
     this.sheets = google.sheets({ version: 'v4', auth });
     this.spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID || '';
+    
+    if (!this.spreadsheetId) {
+      throw new Error('GOOGLE_SPREADSHEET_ID is required for Google Sheets integration');
+    }
   }
 
   async addWaitlistSignup(signup: WaitlistSignup): Promise<void> {
     // Check if Google Sheets is properly configured
-    if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      throw new Error('Google Sheets not properly configured. Please ensure GOOGLE_SPREADSHEET_ID and GOOGLE_SERVICE_ACCOUNT_KEY are set.');
+    if (!this.sheets || !this.spreadsheetId) {
+      console.log('Google Sheets not configured, skipping waitlist signup storage');
+      return;
     }
 
     try {
@@ -71,8 +87,9 @@ export class GoogleSheetsStorage {
 
   async addBetaApplication(application: BetaApplication): Promise<void> {
     // Check if Google Sheets is properly configured
-    if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      throw new Error('Google Sheets not properly configured. Please ensure GOOGLE_SPREADSHEET_ID and GOOGLE_SERVICE_ACCOUNT_KEY are set.');
+    if (!this.sheets || !this.spreadsheetId) {
+      console.log('Google Sheets not configured, skipping beta application storage');
+      return;
     }
 
     try {
@@ -103,6 +120,11 @@ export class GoogleSheetsStorage {
   }
 
   async initializeSheets(): Promise<void> {
+    if (!this.sheets || !this.spreadsheetId) {
+      console.log('Google Sheets not configured, skipping initialization');
+      return;
+    }
+    
     try {
       // Create headers for Waitlist sheet
       await this.sheets.spreadsheets.values.update({
@@ -131,8 +153,7 @@ export class GoogleSheetsStorage {
 
   async checkEmailExists(email: string, sheetName: string): Promise<boolean> {
     // Check if Google Sheets is properly configured
-    if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      console.warn('Google Sheets not configured, skipping email check');
+    if (!this.sheets || !this.spreadsheetId) {
       return false;
     }
 
