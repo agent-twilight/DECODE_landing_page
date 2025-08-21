@@ -38,10 +38,9 @@ export class GoogleSheetsStorage {
   }
 
   async addWaitlistSignup(signup: WaitlistSignup): Promise<void> {
-    // Skip Google Sheets integration if not properly configured
+    // Check if Google Sheets is properly configured
     if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      console.log('Google Sheets not configured, skipping...');
-      return;
+      throw new Error('Google Sheets not properly configured. Please ensure GOOGLE_SPREADSHEET_ID and GOOGLE_SERVICE_ACCOUNT_KEY are set.');
     }
 
     try {
@@ -66,15 +65,14 @@ export class GoogleSheetsStorage {
       console.log('Successfully added waitlist signup to Google Sheets');
     } catch (error) {
       console.error('Error adding waitlist signup to Google Sheets:', error);
-      // Don't throw error - continue with in-memory storage
+      throw new Error(`Failed to save waitlist signup to Google Sheets: ${(error as Error).message}`);
     }
   }
 
   async addBetaApplication(application: BetaApplication): Promise<void> {
-    // Skip Google Sheets integration if not properly configured
+    // Check if Google Sheets is properly configured
     if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      console.log('Google Sheets not configured, skipping...');
-      return;
+      throw new Error('Google Sheets not properly configured. Please ensure GOOGLE_SPREADSHEET_ID and GOOGLE_SERVICE_ACCOUNT_KEY are set.');
     }
 
     try {
@@ -100,7 +98,7 @@ export class GoogleSheetsStorage {
       console.log('Successfully added beta application to Google Sheets');
     } catch (error) {
       console.error('Error adding beta application to Google Sheets:', error);
-      // Don't throw error - continue with in-memory storage
+      throw new Error(`Failed to save beta application to Google Sheets: ${(error as Error).message}`);
     }
   }
 
@@ -132,8 +130,9 @@ export class GoogleSheetsStorage {
   }
 
   async checkEmailExists(email: string, sheetName: string): Promise<boolean> {
-    // Skip Google Sheets check if not properly configured
+    // Check if Google Sheets is properly configured
     if (!this.spreadsheetId || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      console.warn('Google Sheets not configured, skipping email check');
       return false;
     }
 
@@ -148,7 +147,8 @@ export class GoogleSheetsStorage {
       return rows.slice(1).some((row: any[]) => row[0] === email);
     } catch (error) {
       console.error(`Error checking email existence in ${sheetName}:`, error);
-      return false; // Assume email doesn't exist if we can't check
+      // If we can't check, assume email doesn't exist to allow the operation
+      return false;
     }
   }
 }

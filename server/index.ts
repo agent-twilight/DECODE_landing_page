@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { googleSheetsStorage } from "./google-sheets";
 
 const app = express();
 app.use(express.json());
@@ -37,6 +38,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize Google Sheets on startup
+  try {
+    await googleSheetsStorage.initializeSheets();
+    log("Google Sheets initialized successfully");
+  } catch (error) {
+    log(`Failed to initialize Google Sheets: ${(error as Error).message}`);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
