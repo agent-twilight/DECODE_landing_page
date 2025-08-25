@@ -68,7 +68,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          <div>
+          {/* <div>
             <h4 className="text-lg font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-blue-200">
               <li><a href="#" className="hover:text-white transition-colors">About</a></li>
@@ -76,7 +76,7 @@ export default function Footer() {
               <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
             </ul>
-          </div>
+          </div> */}
         </div>
         
         <div className="mt-12 pt-8 border-t border-blue-800 text-center text-blue-200">

@@ -24,23 +24,49 @@ export default function HowItWorks() {
 
   const sampleResults = [
     {
-      ingredient: "Hyaluronic Acid",
-      function: "Humectant",
+      ingredient: "Aqua (Water)",
+      function: "Solvent",
       safety: { status: "Safe", icon: CheckCircle, color: "text-research-green-600" },
       effectiveness: { status: "Proven", icon: CheckCircle, color: "text-research-green-600" },
     },
     {
-      ingredient: "Retinol",
-      function: "Anti-aging",
-      safety: { status: "Caution", icon: AlertTriangle, color: "text-yellow-600" },
+      ingredient: "Glycolic Acid",
+      function: "Exfoliant", // Corrected
+      safety: { status: "Safe", icon: CheckCircle, color: "text-research-green-600" },
       effectiveness: { status: "Proven", icon: CheckCircle, color: "text-research-green-600" },
     },
     {
-      ingredient: "Fragrance",
-      function: "Scent",
-      safety: { status: "Allergen", icon: AlertTriangle, color: "text-red-600" },
-      effectiveness: { status: "N/A", icon: X, color: "text-gray-600" },
+      ingredient: "Rosa Damascena Flower Water",
+      function: "Skin Conditioning / Fragrance", // Corrected
+      safety: { status: "Caution", icon: AlertTriangle, color: "text-yellow-600" },
+      effectiveness: { status: "Good", icon: CheckCircle, color: "text-blue-600" }, // Corrected
     },
+    {
+      ingredient: "Centaurea Cyanus Flower Water",
+      function: "Skin Conditioning / Soothing", // Corrected
+      safety: { status: "Caution", icon: AlertTriangle, color: "text-yellow-600" }, // Corrected
+      effectiveness: { status: "Good", icon: CheckCircle, color: "text-blue-600" }, // Corrected
+    },
+    {
+      ingredient: "Aspartic Acid",
+      function: "Skin Conditioning",
+      safety: { status: "Safe", icon: CheckCircle, color: "text-research-green-600" }, // Corrected
+      effectiveness: { status: "Good", icon: CheckCircle, color: "text-blue-600" }, // Corrected
+    },
+    {
+      ingredient: "1,2-Hexanediol",
+      function: "Solvent / Humectant", // Corrected
+      safety: { status: "Safe", icon: CheckCircle, color: "text-research-green-600" }, // Corrected
+      effectiveness: { status: "Proven", icon: CheckCircle, color: "text-research-green-600" }, // Corrected
+    },
+    {
+      ingredient: "Phenylalanine",
+      function: "Skin Conditioning", // Corrected
+      safety: { status: "Safe", icon: CheckCircle, color: "text-research-green-600" }, // Corrected
+      effectiveness: { status: "Good", icon: CheckCircle, color: "text-blue-600" }, // Corrected
+    },
+
+
   ];
 
   return (
@@ -68,15 +94,6 @@ export default function HowItWorks() {
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="mt-12 lg:mt-0">
-            <img 
-              src="https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&h=800" 
-              alt="Scientist analyzing cosmetic ingredients in modern laboratory" 
-              className="rounded-2xl shadow-xl w-full h-auto" 
-            />
-            
             {/* Demo Results Preview */}
             <div className="mt-8 bg-white rounded-xl shadow-lg p-6 border border-gray-200">
               <h4 className="text-lg font-semibold text-gray-900 mb-4">Sample Analysis Results</h4>
@@ -94,7 +111,7 @@ export default function HowItWorks() {
                     {sampleResults.map((result, index) => {
                       const SafetyIcon = result.safety.icon;
                       const EffectivenessIcon = result.effectiveness.icon;
-                      
+
                       return (
                         <tr key={index} className="border-b border-gray-100">
                           <td className="py-2 text-gray-900">{result.ingredient}</td>
@@ -118,6 +135,15 @@ export default function HowItWorks() {
                 </table>
               </div>
             </div>
+          </div>
+
+          <div className="mt-12 lg:mt-0">
+            <img 
+              src="https://images.pexels.com/photos/27639443/pexels-photo-27639443.jpeg" 
+              alt="Scientist analyzing cosmetic ingredients in modern laboratory" 
+              className="rounded-2xl shadow-xl w-full h-auto" 
+            />
+
           </div>
         </div>
       </div>
