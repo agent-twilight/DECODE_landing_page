@@ -1,5 +1,5 @@
 import { type Handler, type HandlerEvent, type HandlerContext } from "@netlify/functions";
-import { storage } from "../../../src/server/storage";
+import { storage } from "../../server/storage";
 
 export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
   if (event.httpMethod !== "GET") {

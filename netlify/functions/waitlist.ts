@@ -1,6 +1,6 @@
 import { type Handler, type HandlerEvent, type HandlerContext } from "@netlify/functions";
-import { storage } from "../../../src/server/storage";
-import { insertWaitlistSignupSchema } from "../../../src/shared/schema";
+import { storage } from "../../server/storage";
+import { insertWaitlistSignupSchema } from "../../shared/schema";
 import { z } from "zod";
 
 export const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
