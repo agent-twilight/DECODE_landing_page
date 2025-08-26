@@ -30,12 +30,6 @@
       "dest": "/dist/index.html"
     }
   ],
-  "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 30
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }
