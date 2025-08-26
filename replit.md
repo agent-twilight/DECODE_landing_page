@@ -78,3 +78,9 @@ Preferred communication style: Simple, everyday language.
 - **Tailwind CSS**: Utility-first CSS framework with custom design system
 - **Google Fonts**: Web font integration with Inter, DM Sans, Architects Daughter, and Geist Mono
 - **Custom CSS Variables**: Consistent theming system with design tokens for colors and spacing
+
+## Deployment and Production
+- **Vercel Configuration**: Ready-to-deploy with vercel.json configuration
+- **Build Process**: Optimized for Vercel serverless functions with static frontend
+- **Environment Variables**: Secure handling of Google Sheets credentials and database connections
+- **Production Routing**: Proper API and static asset routing for serverless deployment
