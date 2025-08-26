@@ -1,0 +1,19 @@
+[build]
+  command = "npm run build""
+  publish = "dist/public"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/waitlist"
+  to = "/.netlify/functions/waitlist"
+  status = 200
+
+[[redirects]]
+  from = "/api/beta"
+  to = "/.netlify/functions/beta"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/data"
+  to = "/.netlify/functions/admin-data"
+  status = 200
